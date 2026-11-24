@@ -107,7 +107,7 @@ export default function SiteHeader() {
     <header className="relative z-50 w-full bg-white">
 
       {/* TOP INFORMATION BAR */}
-      <div className="border-t-2 border-[#25334D] bg-white">
+      <div className="hidden border-t-2 border-[#25334D] bg-white">
         <div className="mx-auto grid max-w-[1400px] grid-cols-2 gap-4 px-4 py-5 sm:grid-cols-3 xl:grid-cols-6 xl:gap-3 xl:px-0">
 
           {contactItems.map(({ label, value, href, Icon }, index) => (
