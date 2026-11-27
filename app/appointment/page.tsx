@@ -1,58 +1,45 @@
 
 "use client";
 
-import { useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  ArrowRight,
   CalendarDays,
-  CheckCircle2,
-  Clock3,
-  HeartPulse,
+  Clock,
+  User,
   Mail,
   Phone,
-  ShieldCheck,
-  UserRound,
   Stethoscope,
+  ArrowRight,
+  CheckCircle2,
+  Building2,
 } from "lucide-react";
-
-const doctors = [
-  { name: "Dr. Nashid Martines", specialty: "Cardiology" },
-  { name: "Dr. Sarah Ahmed", specialty: "Neurology" },
-  { name: "Dr. Michael Hasan", specialty: "Orthopedics" },
-  { name: "Dr. Emily Rahman", specialty: "Dermatology" },
-  { name: "Dr. Arif Hossain", specialty: "Dental Care" },
-  { name: "Dr. Nusrat Jahan", specialty: "General Medicine" },
-];
-
-const timeSlots = [
-  "09:00 AM",
-  "09:30 AM",
-  "10:00 AM",
-  "10:30 AM",
-  "11:00 AM",
-  "11:30 AM",
-  "02:00 PM",
-  "02:30 PM",
-  "03:00 PM",
-  "03:30 PM",
-  "04:00 PM",
-  "04:30 PM",
-];
 
 const departments = [
   "Cardiology",
   "Neurology",
   "Orthopedics",
+  "Pediatrics",
   "Dermatology",
   "Dental Care",
-  "General Medicine",
-  "Pediatrics",
-  "Other",
+  "Eye Care",
+  "Medicine",
+  "Gynecology",
+  "Surgery",
+];
+
+const doctors = [
+  "Dr. Nashid Martines",
+  "Dr. Sarah Ahmed",
+  "Dr. John Smith",
+  "Dr. Michael Brown",
+  "Dr. Ayesha Rahman",
 ];
 
 export default function AppointmentPage() {
-  const [form, setForm] = useState({
+  const [today, setToday] = useState("");
+
+  const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
@@ -63,468 +50,586 @@ export default function AppointmentPage() {
     message: "",
   });
 
-  const [success, setSuccess] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  const today = new Date().toISOString().split("T")[0];
+  useEffect(() => {
+    const localDate = new Date();
+    const year = localDate.getFullYear();
+    const month = String(localDate.getMonth() + 1).padStart(2, "0");
+    const day = String(localDate.getDate()).padStart(2, "0");
+
+    setToday(`${year}-${month}-${day}`);
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    setSuccess(false);
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSuccess(true);
+
+    setSubmitted(true);
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      department: "",
+      doctor: "",
+      date: "",
+      time: "",
+      message: "",
+    });
+
+    setSubmitted(false);
   };
 
   return (
-    <main className="overflow-hidden bg-[#F5F8FC] text-[#071D49]">
-      {/* HERO */}
-      <section className="relative overflow-hidden bg-[#061D50]">
-        <div className="absolute -right-32 -top-32 h-[450px] w-[450px] rounded-full bg-cyan-500/10 blur-3xl" />
-        <div className="absolute -bottom-40 -left-20 h-[400px] w-[400px] rounded-full bg-blue-500/20 blur-3xl" />
+    <main className="min-h-screen bg-[#f6f8fb] text-slate-900">
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-[#063b38]">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#063b38] via-[#073f3b] to-[#0b6257]" />
 
-        <div className="relative mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28">
+        <div className="absolute -right-32 -top-32 h-96 w-96 rounded-full bg-emerald-400/10 blur-3xl" />
+
+        <div className="absolute -bottom-40 -left-20 h-96 w-96 rounded-full bg-cyan-400/10 blur-3xl" />
+
+        <div className="relative mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28">
           <motion.div
-            initial={{ opacity: 0, y: 25 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
             className="max-w-3xl"
           >
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm text-cyan-300">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm text-emerald-100">
               <CalendarDays size={16} />
-              Online Appointment Booking
+              <span>Online Appointment Booking</span>
             </div>
 
-            <h1 className="text-4xl font-bold leading-tight tracking-tight text-white md:text-6xl">
-              Your Health,
-              <br />
-              <span className="text-[#00BCD4]">Our Priority.</span>
+            <h1 className="text-4xl font-bold leading-tight text-white md:text-6xl">
+              Book Your
+              <span className="block text-emerald-300">
+                Appointment
+              </span>
             </h1>
 
-            <p className="mt-6 max-w-2xl text-base leading-8 text-blue-100/80 md:text-lg">
-              Schedule your appointment with our experienced medical
-              professionals. We're here to provide personalized care
-              and support for your well-being.
+            <p className="mt-6 max-w-2xl text-base leading-8 text-white/70 md:text-lg">
+              Schedule your consultation with our experienced doctors.
+              Your health deserves the best care, and we are here to
+              help you every step of the way.
             </p>
 
-            <div className="mt-10 flex flex-wrap gap-6">
-              <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-cyan-300">
-                  <ShieldCheck size={22} />
-                </div>
-                <div>
-                  <p className="font-semibold text-white">Trusted Care</p>
-                  <p className="text-sm text-blue-100/60">
-                    Professional doctors
-                  </p>
-                </div>
+            <div className="mt-8 flex flex-wrap gap-6 text-sm text-white/80">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="text-emerald-300" size={18} />
+                <span>Expert Doctors</span>
               </div>
 
-              <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-cyan-300">
-                  <Clock3 size={22} />
-                </div>
-                <div>
-                  <p className="font-semibold text-white">Easy Booking</p>
-                  <p className="text-sm text-blue-100/60">
-                    Flexible scheduling
-                  </p>
-                </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="text-emerald-300" size={18} />
+                <span>Easy Booking</span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="text-emerald-300" size={18} />
+                <span>Quality Healthcare</span>
               </div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* APPOINTMENT SECTION */}
-      <section className="mx-auto max-w-[1400px] px-5 py-16 md:px-10 md:py-24">
-        <div className="grid items-start gap-10 lg:grid-cols-[1fr_380px] xl:gap-16">
-          {/* FORM */}
+      {/* Appointment Form */}
+      <section className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-20">
+        <div className="grid items-start gap-10 lg:grid-cols-[1fr_360px]">
+          {/* Form */}
           <motion.div
             initial={{ opacity: 0, y: 25 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-10"
           >
             <div className="mb-8">
-              <span className="text-sm font-semibold uppercase tracking-[3px] text-[#00BCD4]">
-                Book Appointment
-              </span>
-
-              <h2 className="mt-3 text-3xl font-bold text-[#061D50] md:text-4xl">
-                Schedule a Visit
+              <h2 className="text-2xl font-bold md:text-3xl">
+                Appointment Information
               </h2>
 
-              <p className="mt-3 text-sm leading-7 text-slate-500">
-                Fill in your information below to request an appointment
-                with one of our specialists.
+              <p className="mt-2 text-sm leading-6 text-slate-500">
+                Fill out the form below to request an appointment.
               </p>
             </div>
 
             <AnimatePresence mode="wait">
-              {success && (
+              {submitted ? (
                 <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
-                  className="mb-7 flex gap-4 rounded-2xl border border-green-200 bg-green-50 p-5"
+                  className="rounded-2xl border border-emerald-200 bg-emerald-50 p-8 text-center"
                 >
-                  <CheckCircle2
-                    className="mt-1 shrink-0 text-green-600"
-                    size={24}
-                  />
-                  <div>
-                    <h3 className="font-bold text-green-800">
-                      Appointment Request Submitted!
-                    </h3>
-                    <p className="mt-1 text-sm leading-6 text-green-700">
-                      Your form has been completed successfully.
-                      This demo does not send or store your booking.
-                    </p>
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
+                    <CheckCircle2
+                      size={32}
+                      className="text-emerald-600"
+                    />
                   </div>
+
+                  <h3 className="mt-5 text-2xl font-bold text-emerald-900">
+                    Appointment Request Submitted!
+                  </h3>
+
+                  <p className="mt-3 text-sm leading-7 text-emerald-800">
+                    Your appointment request has been prepared.
+                    Connect this form to your backend to save and
+                    confirm appointments.
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={resetForm}
+                    className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#063b38] px-6 py-3 font-semibold text-white transition hover:bg-[#0b6257]"
+                  >
+                    Book Another Appointment
+                    <ArrowRight size={18} />
+                  </button>
                 </motion.div>
+              ) : (
+                <motion.form
+                  key="form"
+                  onSubmit={handleSubmit}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="space-y-6"
+                >
+                  {/* Personal Information */}
+                  <div>
+                    <h3 className="mb-4 text-lg font-semibold">
+                      Personal Information
+                    </h3>
+
+                    <div className="grid gap-5 md:grid-cols-2">
+                      <div>
+                        <label
+                          htmlFor="name"
+                          className="mb-2 block text-sm font-medium text-slate-700"
+                        >
+                          Full Name *
+                        </label>
+
+                        <div className="relative">
+                          <User
+                            size={18}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                          />
+
+                          <input
+                            id="name"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                            placeholder="Enter your full name"
+                            className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-12 pr-4 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="email"
+                          className="mb-2 block text-sm font-medium text-slate-700"
+                        >
+                          Email Address *
+                        </label>
+
+                        <div className="relative">
+                          <Mail
+                            size={18}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                          />
+
+                          <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            placeholder="example@email.com"
+                            className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-12 pr-4 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="phone"
+                          className="mb-2 block text-sm font-medium text-slate-700"
+                        >
+                          Phone Number *
+                        </label>
+
+                        <div className="relative">
+                          <Phone
+                            size={18}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                          />
+
+                          <input
+                            id="phone"
+                            name="phone"
+                            type="tel"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            required
+                            placeholder="+880 1XXXXXXXXX"
+                            className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-12 pr-4 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Medical Information */}
+                  <div className="border-t border-slate-100 pt-6">
+                    <h3 className="mb-4 text-lg font-semibold">
+                      Medical Information
+                    </h3>
+
+                    <div className="grid gap-5 md:grid-cols-2">
+                      <div>
+                        <label
+                          htmlFor="department"
+                          className="mb-2 block text-sm font-medium text-slate-700"
+                        >
+                          Department *
+                        </label>
+
+                        <div className="relative">
+                          <Building2
+                            size={18}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                          />
+
+                          <select
+                            id="department"
+                            name="department"
+                            value={formData.department}
+                            onChange={handleChange}
+                            required
+                            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-12 pr-4 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                          >
+                            <option value="">
+                              Select Department
+                            </option>
+
+                            {departments.map((department) => (
+                              <option
+                                key={department}
+                                value={department}
+                              >
+                                {department}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="doctor"
+                          className="mb-2 block text-sm font-medium text-slate-700"
+                        >
+                          Preferred Doctor *
+                        </label>
+
+                        <div className="relative">
+                          <Stethoscope
+                            size={18}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                          />
+
+                          <select
+                            id="doctor"
+                            name="doctor"
+                            value={formData.doctor}
+                            onChange={handleChange}
+                            required
+                            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-12 pr-4 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                          >
+                            <option value="">
+                              Select Doctor
+                            </option>
+
+                            {doctors.map((doctor) => (
+                              <option
+                                key={doctor}
+                                value={doctor}
+                              >
+                                {doctor}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="date"
+                          className="mb-2 block text-sm font-medium text-slate-700"
+                        >
+                          Appointment Date *
+                        </label>
+
+                        <div className="relative">
+                          <CalendarDays
+                            size={18}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                          />
+
+                          <input
+                            id="date"
+                            name="date"
+                            type="date"
+                            min={today || undefined}
+                            value={formData.date}
+                            onChange={handleChange}
+                            required
+                            className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-12 pr-4 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="time"
+                          className="mb-2 block text-sm font-medium text-slate-700"
+                        >
+                          Appointment Time *
+                        </label>
+
+                        <div className="relative">
+                          <Clock
+                            size={18}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                          />
+
+                          <select
+                            id="time"
+                            name="time"
+                            value={formData.time}
+                            onChange={handleChange}
+                            required
+                            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-12 pr-4 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                          >
+                            <option value="">
+                              Select Time
+                            </option>
+
+                            <option value="09:00 AM">
+                              09:00 AM
+                            </option>
+
+                            <option value="10:00 AM">
+                              10:00 AM
+                            </option>
+
+                            <option value="11:00 AM">
+                              11:00 AM
+                            </option>
+
+                            <option value="12:00 PM">
+                              12:00 PM
+                            </option>
+
+                            <option value="02:00 PM">
+                              02:00 PM
+                            </option>
+
+                            <option value="03:00 PM">
+                              03:00 PM
+                            </option>
+
+                            <option value="04:00 PM">
+                              04:00 PM
+                            </option>
+
+                            <option value="05:00 PM">
+                              05:00 PM
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Message */}
+                  <div className="border-t border-slate-100 pt-6">
+                    <label
+                      htmlFor="message"
+                      className="mb-2 block text-sm font-medium text-slate-700"
+                    >
+                      Message / Symptoms
+                    </label>
+
+                    <textarea
+                      id="message"
+                      name="message"
+                      rows={4}
+                      value={formData.message}
+                      onChange={handleChange}
+                      placeholder="Describe your concern or symptoms..."
+                      className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
+                    />
+                  </div>
+
+                  {/* Submit */}
+                  <button
+                    type="submit"
+                    className="group flex w-full items-center justify-center gap-3 rounded-xl bg-[#063b38] px-6 py-4 font-semibold text-white transition duration-300 hover:bg-[#0b6257]"
+                  >
+                    Book Appointment
+
+                    <ArrowRight
+                      size={20}
+                      className="transition-transform group-hover:translate-x-1"
+                    />
+                  </button>
+
+                  <p className="text-center text-xs leading-6 text-slate-500">
+                    By submitting this form, you request an
+                    appointment. Actual confirmation requires
+                    hospital verification.
+                  </p>
+                </motion.form>
               )}
             </AnimatePresence>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* PERSONAL INFORMATION */}
-              <div>
-                <h3 className="mb-5 flex items-center gap-2 text-lg font-bold text-[#061D50]">
-                  <UserRound className="text-[#00BCD4]" size={20} />
-                  Personal Information
-                </h3>
-
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <div>
-                    <label className="mb-2 block text-sm font-semibold text-slate-700">
-                      Full Name *
-                    </label>
-                    <input
-                      name="name"
-                      value={form.name}
-                      onChange={handleChange}
-                      required
-                      placeholder="Enter your full name"
-                      className="w-full rounded-xl border border-slate-200 bg-[#F8FAFC] px-4 py-3.5 outline-none transition focus:border-[#00BCD4] focus:ring-4 focus:ring-cyan-100"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-semibold text-slate-700">
-                      Phone Number *
-                    </label>
-                    <input
-                      name="phone"
-                      value={form.phone}
-                      onChange={handleChange}
-                      required
-                      type="tel"
-                      placeholder="+880 1XXXXXXXXX"
-                      className="w-full rounded-xl border border-slate-200 bg-[#F8FAFC] px-4 py-3.5 outline-none transition focus:border-[#00BCD4] focus:ring-4 focus:ring-cyan-100"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <label className="mb-2 block text-sm font-semibold text-slate-700">
-                      Email Address *
-                    </label>
-                    <input
-                      name="email"
-                      value={form.email}
-                      onChange={handleChange}
-                      required
-                      type="email"
-                      placeholder="example@email.com"
-                      className="w-full rounded-xl border border-slate-200 bg-[#F8FAFC] px-4 py-3.5 outline-none transition focus:border-[#00BCD4] focus:ring-4 focus:ring-cyan-100"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* APPOINTMENT DETAILS */}
-              <div className="border-t border-slate-100 pt-7">
-                <h3 className="mb-5 flex items-center gap-2 text-lg font-bold text-[#061D50]">
-                  <CalendarDays className="text-[#00BCD4]" size={20} />
-                  Appointment Details
-                </h3>
-
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <div>
-                    <label className="mb-2 block text-sm font-semibold text-slate-700">
-                      Department *
-                    </label>
-                    <select
-                      name="department"
-                      value={form.department}
-                      onChange={handleChange}
-                      required
-                      className="w-full rounded-xl border border-slate-200 bg-[#F8FAFC] px-4 py-3.5 outline-none transition focus:border-[#00BCD4] focus:ring-4 focus:ring-cyan-100"
-                    >
-                      <option value="">Select department</option>
-                      {departments.map((department) => (
-                        <option key={department} value={department}>
-                          {department}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-semibold text-slate-700">
-                      Select Doctor
-                    </label>
-                    <select
-                      name="doctor"
-                      value={form.doctor}
-                      onChange={handleChange}
-                      className="w-full rounded-xl border border-slate-200 bg-[#F8FAFC] px-4 py-3.5 outline-none transition focus:border-[#00BCD4] focus:ring-4 focus:ring-cyan-100"
-                    >
-                      <option value="">Choose a doctor</option>
-                      {doctors.map((doctor) => (
-                        <option key={doctor.name} value={doctor.name}>
-                          {doctor.name} - {doctor.specialty}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-semibold text-slate-700">
-                      Preferred Date *
-                    </label>
-                    <input
-                      name="date"
-                      value={form.date}
-                      onChange={handleChange}
-                      required
-                      type="date"
-                      min={today}
-                      className="w-full rounded-xl border border-slate-200 bg-[#F8FAFC] px-4 py-3.5 outline-none transition focus:border-[#00BCD4] focus:ring-4 focus:ring-cyan-100"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-semibold text-slate-700">
-                      Preferred Time *
-                    </label>
-                    <select
-                      name="time"
-                      value={form.time}
-                      onChange={handleChange}
-                      required
-                      className="w-full rounded-xl border border-slate-200 bg-[#F8FAFC] px-4 py-3.5 outline-none transition focus:border-[#00BCD4] focus:ring-4 focus:ring-cyan-100"
-                    >
-                      <option value="">Select time</option>
-                      {timeSlots.map((time) => (
-                        <option key={time} value={time}>
-                          {time}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              {/* MESSAGE */}
-              <div className="border-t border-slate-100 pt-7">
-                <label className="mb-2 block text-sm font-semibold text-slate-700">
-                  Additional Message
-                </label>
-                <textarea
-                  name="message"
-                  value={form.message}
-                  onChange={handleChange}
-                  rows={4}
-                  placeholder="Tell us anything you'd like us to know..."
-                  className="w-full resize-none rounded-xl border border-slate-200 bg-[#F8FAFC] px-4 py-3.5 outline-none transition focus:border-[#00BCD4] focus:ring-4 focus:ring-cyan-100"
-                />
-              </div>
-
-              {/* SUBMIT */}
-              <button
-                type="submit"
-                className="group flex w-full items-center justify-center gap-3 rounded-xl bg-[#061D50] px-6 py-4 font-semibold text-white transition hover:bg-[#00BCD4] hover:text-[#061D50]"
-              >
-                Confirm Appointment Request
-                <ArrowRight
-                  size={20}
-                  className="transition-transform group-hover:translate-x-1"
-                />
-              </button>
-
-              <p className="text-center text-xs leading-6 text-slate-400">
-                By submitting this form, you agree to be contacted
-                regarding your appointment request.
-              </p>
-            </form>
           </motion.div>
 
-          {/* RIGHT SIDEBAR */}
+          {/* Sidebar */}
           <motion.aside
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
             className="space-y-6"
           >
-            {/* CARD */}
-            <div className="overflow-hidden rounded-3xl bg-[#061D50] p-7 text-white md:p-8">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#00BCD4] text-[#061D50]">
-                <Stethoscope size={28} />
+            {/* Information */}
+            <div className="rounded-3xl bg-[#063b38] p-7 text-white">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10">
+                <CalendarDays
+                  size={26}
+                  className="text-emerald-300"
+                />
               </div>
 
-              <h3 className="mt-6 text-2xl font-bold">
-                Quality Healthcare
+              <h3 className="mt-5 text-xl font-bold">
+                Need an Appointment?
               </h3>
 
-              <p className="mt-3 text-sm leading-7 text-blue-100/70">
-                Experience exceptional healthcare with our dedicated
-                medical professionals and patient-first approach.
+              <p className="mt-3 text-sm leading-7 text-white/70">
+                Our team is ready to assist you. Choose your
+                preferred doctor and schedule a visit.
               </p>
 
-              <div className="mt-7 space-y-4">
-                {[
-                  "Experienced specialists",
-                  "Modern medical facilities",
-                  "Personalized treatment",
-                  "Patient-focused care",
-                ].map((item) => (
-                  <div key={item} className="flex items-center gap-3">
-                    <CheckCircle2
-                      size={18}
-                      className="shrink-0 text-[#00BCD4]"
-                    />
-                    <span className="text-sm text-blue-100">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+              <div className="mt-6 space-y-4 border-t border-white/10 pt-5">
+                <div className="flex gap-3">
+                  <Clock
+                    size={20}
+                    className="mt-1 shrink-0 text-emerald-300"
+                  />
 
-            {/* CONTACT CARD */}
-            <div className="rounded-3xl border border-slate-200 bg-white p-7 md:p-8">
-              <h3 className="text-xl font-bold text-[#061D50]">
-                Need Assistance?
-              </h3>
-
-              <p className="mt-3 text-sm leading-7 text-slate-500">
-                Contact our team if you need help scheduling your
-                appointment.
-              </p>
-
-              <div className="mt-6 space-y-4">
-                <a
-                  href="tel:+8801234567890"
-                  className="flex items-center gap-4 rounded-2xl bg-[#F5F8FC] p-4 transition hover:bg-cyan-50"
-                >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-[#00BCD4] shadow-sm">
-                    <Phone size={20} />
-                  </div>
                   <div>
-                    <p className="text-xs text-slate-500">Call Us</p>
-                    <p className="mt-1 font-semibold text-[#061D50]">
+                    <p className="font-medium">
+                      Working Hours
+                    </p>
+
+                    <p className="mt-1 text-sm text-white/60">
+                      Saturday - Thursday
+                    </p>
+
+                    <p className="text-sm text-white/60">
+                      9:00 AM - 6:00 PM
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <Phone
+                    size={20}
+                    className="mt-1 shrink-0 text-emerald-300"
+                  />
+
+                  <div>
+                    <p className="font-medium">
+                      Contact Support
+                    </p>
+
+                    <p className="mt-1 text-sm text-white/60">
                       +880 1234-567890
                     </p>
                   </div>
-                </a>
-
-                <a
-                  href="mailto:info@clinicmaster.com"
-                  className="flex items-center gap-4 rounded-2xl bg-[#F5F8FC] p-4 transition hover:bg-cyan-50"
-                >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-[#00BCD4] shadow-sm">
-                    <Mail size={20} />
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-500">Email Us</p>
-                    <p className="mt-1 break-all font-semibold text-[#061D50]">
-                      info@clinicmaster.com
-                    </p>
-                  </div>
-                </a>
+                </div>
               </div>
             </div>
 
-            {/* HOURS */}
-            <div className="rounded-3xl border border-slate-200 bg-white p-7 md:p-8">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-50 text-[#00BCD4]">
-                  <Clock3 size={22} />
-                </div>
-                <h3 className="text-xl font-bold text-[#061D50]">
-                  Visiting Hours
-                </h3>
-              </div>
+            {/* Steps */}
+            <div className="rounded-3xl border border-slate-200 bg-white p-7">
+              <h3 className="text-xl font-bold">
+                How It Works
+              </h3>
 
-              <div className="mt-6 space-y-4">
+              <div className="mt-6 space-y-6">
                 {[
-                  ["Saturday - Thursday", "09:00 AM - 05:00 PM"],
-                  ["Friday", "Closed"],
-                ].map(([day, time]) => (
+                  {
+                    number: "01",
+                    title: "Fill the Form",
+                    text: "Enter your personal and medical information.",
+                  },
+                  {
+                    number: "02",
+                    title: "Choose a Doctor",
+                    text: "Select your department and preferred doctor.",
+                  },
+                  {
+                    number: "03",
+                    title: "Get Confirmation",
+                    text: "Our team will contact you for confirmation.",
+                  },
+                ].map((step) => (
                   <div
-                    key={day}
-                    className="flex items-center justify-between gap-4 border-b border-slate-100 pb-4 last:border-0 last:pb-0"
+                    key={step.number}
+                    className="flex gap-4"
                   >
-                    <span className="text-sm text-slate-500">{day}</span>
-                    <span className="text-right text-sm font-semibold text-[#061D50]">
-                      {time}
-                    </span>
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-50 font-bold text-emerald-700">
+                      {step.number}
+                    </div>
+
+                    <div>
+                      <h4 className="font-semibold">
+                        {step.title}
+                      </h4>
+
+                      <p className="mt-1 text-sm leading-6 text-slate-500">
+                        {step.text}
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
-
-            {/* TRUST */}
-            <div className="rounded-3xl border border-cyan-100 bg-cyan-50 p-6">
-              <div className="flex gap-4">
-                <ShieldCheck
-                  size={30}
-                  className="shrink-0 text-[#00BCD4]"
-                />
-                <div>
-                  <h4 className="font-bold text-[#061D50]">
-                    Your Privacy Matters
-                  </h4>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    We are committed to respecting your privacy and
-                    handling your information responsibly.
-                  </p>
-                </div>
-              </div>
-            </div>
           </motion.aside>
-        </div>
-      </section>
-
-      {/* BOTTOM CTA */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-[1400px] px-5 py-14 md:px-10">
-          <div className="flex flex-col justify-between gap-6 rounded-3xl bg-[#EAF8FB] p-8 md:flex-row md:items-center md:p-12">
-            <div>
-              <p className="font-semibold text-[#00BCD4]">
-                CLINIC MASTER
-              </p>
-              <h2 className="mt-3 text-2xl font-bold text-[#061D50] md:text-3xl">
-                Taking care of your health starts here.
-              </h2>
-              <p className="mt-3 text-sm leading-7 text-slate-500">
-                Schedule your visit and take the next step toward better health.
-              </p>
-            </div>
-
-            <a
-              href="/contact"
-              className="inline-flex shrink-0 items-center justify-center gap-3 rounded-xl bg-[#061D50] px-7 py-4 font-semibold text-white transition hover:bg-[#00BCD4] hover:text-[#061D50]"
-            >
-              Contact Us
-              <ArrowRight size={20} />
-            </a>
-          </div>
         </div>
       </section>
     </main>
