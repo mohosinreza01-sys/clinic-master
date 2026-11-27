@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useParams } from "next/navigation";
+import { use } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -328,9 +328,13 @@ const fadeUp = {
   },
 };
 
-export default function DoctorDetailsPage() {
-  const params = useParams();
-  const id = Number(params.id);
+export default function DoctorDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id: routeId } = use(params);
+  const id = Number(routeId);
 
   const doctor = doctors.find((item) => item.id === id);
 
@@ -447,10 +451,7 @@ export default function DoctorDetailsPage() {
 
               <div className="mt-8 flex flex-wrap gap-4">
                 <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-4">
-                  <BriefcaseMedical
-                    size={22}
-                    className="text-[#00BCD4]"
-                  />
+                  <BriefcaseMedical size={22} className="text-[#00BCD4]" />
 
                   <div>
                     <p className="text-[12px] text-white/50">
@@ -602,10 +603,7 @@ export default function DoctorDetailsPage() {
 
               <div className="mt-8 space-y-6">
                 {doctor.education.map((item, index) => (
-                  <div
-                    key={item}
-                    className="flex gap-4"
-                  >
+                  <div key={item} className="flex gap-4">
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#00BCD4]/10">
                       <GraduationCap
                         size={22}
@@ -680,10 +678,7 @@ export default function DoctorDetailsPage() {
               className="sticky top-24 rounded-[25px] border border-[#E5ECF4] bg-white p-7 shadow-sm"
             >
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#00BCD4]/10">
-                <CalendarDays
-                  size={25}
-                  className="text-[#00BCD4]"
-                />
+                <CalendarDays size={25} className="text-[#00BCD4]" />
               </div>
 
               <h3 className="mt-5 text-2xl font-bold text-[#061D50]">
@@ -705,10 +700,7 @@ export default function DoctorDetailsPage() {
 
               <div className="mt-7 space-y-5 border-t border-[#E5ECF4] pt-6">
                 <div className="flex gap-3">
-                  <Clock
-                    size={20}
-                    className="shrink-0 text-[#00BCD4]"
-                  />
+                  <Clock size={20} className="shrink-0 text-[#00BCD4]" />
 
                   <div>
                     <h4 className="text-[14px] font-semibold text-[#061D50]">
@@ -722,10 +714,7 @@ export default function DoctorDetailsPage() {
                 </div>
 
                 <div className="flex gap-3">
-                  <MapPin
-                    size={20}
-                    className="shrink-0 text-[#00BCD4]"
-                  />
+                  <MapPin size={20} className="shrink-0 text-[#00BCD4]" />
 
                   <div>
                     <h4 className="text-[14px] font-semibold text-[#061D50]">
@@ -743,10 +732,7 @@ export default function DoctorDetailsPage() {
                 </div>
 
                 <div className="flex gap-3">
-                  <Phone
-                    size={20}
-                    className="shrink-0 text-[#00BCD4]"
-                  />
+                  <Phone size={20} className="shrink-0 text-[#00BCD4]" />
 
                   <div>
                     <h4 className="text-[14px] font-semibold text-[#061D50]">
@@ -763,10 +749,7 @@ export default function DoctorDetailsPage() {
                 </div>
 
                 <div className="flex gap-3">
-                  <Mail
-                    size={20}
-                    className="shrink-0 text-[#00BCD4]"
-                  />
+                  <Mail size={20} className="shrink-0 text-[#00BCD4]" />
 
                   <div>
                     <h4 className="text-[14px] font-semibold text-[#061D50]">
@@ -787,10 +770,7 @@ export default function DoctorDetailsPage() {
             {/* SUPPORT */}
             <div className="rounded-[25px] bg-[#061D50] p-7">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#00BCD4]/15">
-                <HeartPulse
-                  size={23}
-                  className="text-[#00BCD4]"
-                />
+                <HeartPulse size={23} className="text-[#00BCD4]" />
               </div>
 
               <h3 className="mt-5 text-xl font-bold text-white">
