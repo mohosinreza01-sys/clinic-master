@@ -20,44 +20,88 @@ import {
 
 const navItems = [
   {
-    name: "Pages",
-    links: [
-      { name: "About Us", href: "#about", description: "Discover our clinic" },
-      { name: "Appointment", href: "#appointment", description: "Book your visit" },
-      { name: "FAQ", href: "#faq", description: "Common questions" },
-    ],
-  },
-  {
     name: "Team",
     links: [
-      { name: "Our Doctors", href: "#doctors", description: "Meet our specialists" },
-      { name: "Our Team", href: "#team", description: "Healthcare professionals" },
+      {
+        name: "Our Doctors",
+        href: "/team/doctors",
+        description: "Meet our specialists",
+      },
+      {
+        name: "Our Team",
+        href: "/team",
+        description: "Healthcare professionals",
+      },
     ],
   },
   {
     name: "Services",
     links: [
-      { name: "All Services", href: "#services", description: "Explore our services" },
-      { name: "Cardiology", href: "#cardiology", description: "Heart care specialists" },
-      { name: "Dental Care", href: "#dental", description: "Complete dental care" },
-    ],
-  },
-  {
-    name: "Blogs",
-    links: [
-      { name: "Latest Blogs", href: "#blogs", description: "Health and wellness" },
-      { name: "Health News", href: "#news", description: "Latest health updates" },
+      {
+        name: "All Services",
+        href: "/services",
+        description: "Explore our services",
+      },
+      {
+        name: "Cardiology",
+        href: "/services/cardiology",
+        description: "Heart care specialists",
+      },
+      {
+        name: "Dental Care",
+        href: "/services/dental-care",
+        description: "Complete dental care",
+      },
     ],
   },
 ];
 
 const contactItems = [
-  { label: "Contact Us", value: "+1 123 456 7890", href: "tel:+11234567890", Icon: PhoneCall },
-  { label: "Email Supports", value: "email@domain.com", href: "mailto:email@domain.com", Icon: Mail },
-  { label: "Online Appointment", value: "Book Now", href: "#appointment", Icon: CalendarDays },
-  { label: "Supports", value: "24x7 Supports", href: "tel:+11234567890", Icon: Headset },
-  { label: "Payment", value: "Pay Online", href: "#payment", Icon: CreditCard },
-  { label: "My Cart", value: "2 Items", href: "#cart", Icon: ShoppingCart },
+  {
+    label: "Contact Us",
+    value: "+1 123 456 7890",
+    href: "tel:+11234567890",
+    Icon: PhoneCall,
+  },
+  {
+    label: "Email Supports",
+    value: "email@domain.com",
+    href: "mailto:email@domain.com",
+    Icon: Mail,
+  },
+  {
+    label: "Online Appointment",
+    value: "Book Now",
+    href: "/appointment",
+    Icon: CalendarDays,
+  },
+  {
+    label: "Supports",
+    value: "24x7 Supports",
+    href: "tel:+11234567890",
+    Icon: Headset,
+  },
+  {
+    label: "Payment",
+    value: "Pay Online",
+    href: "/payment",
+    Icon: CreditCard,
+  },
+  {
+    label: "My Cart",
+    value: "2 Items",
+    href: "/cart",
+    Icon: ShoppingCart,
+  },
+];
+
+const quickLinks = [
+  { name: "About Clinic", href: "/about" },
+  { name: "Our Services", href: "/services" },
+  { name: "Find a Doctor", href: "/team/doctors" },
+  { name: "Our Team", href: "/team" },
+  { name: "Contact Information", href: "/contact" },
+  { name: "Book Appointment", href: "/appointment" },
 ];
 
 const dropdownVariants = {
@@ -101,15 +145,15 @@ export default function SiteHeader() {
   const closeMobile = () => {
     setMobileOpen(false);
     setMobileSubmenu(null);
+    setQuickMenu(false);
+    setActiveDropdown(null);
   };
 
   return (
     <header className="relative z-50 w-full bg-white">
-
       {/* TOP INFORMATION BAR */}
       <div className="hidden border-t-2 border-[#25334D] bg-white">
         <div className="mx-auto grid max-w-[1400px] grid-cols-2 gap-4 px-4 py-5 sm:grid-cols-3 xl:grid-cols-6 xl:gap-3 xl:px-0">
-
           {contactItems.map(({ label, value, href, Icon }, index) => (
             <motion.a
               key={label}
@@ -131,6 +175,7 @@ export default function SiteHeader() {
                 <p className="mb-1 text-[12px] font-medium text-[#00BCD4]">
                   {label}
                 </p>
+
                 <p className="truncate text-[14px] font-bold text-[#061D50]">
                   {value}
                   {(label === "Payment" || label === "Online Appointment") && (
@@ -140,21 +185,18 @@ export default function SiteHeader() {
               </div>
             </motion.a>
           ))}
-
         </div>
       </div>
 
       {/* MAIN NAVBAR */}
       <nav className="relative bg-gradient-to-r from-[#041638] via-[#061D50] to-[#09275C] shadow-[0_8px_30px_rgba(6,29,80,0.12)]">
-
-        {/* Subtle decorative glow */}
+        {/* Decorative Glow */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -right-20 -top-32 h-64 w-64 rounded-full bg-[#00BCD4]/10 blur-[100px]" />
           <div className="absolute -bottom-32 left-1/3 h-48 w-48 rounded-full bg-blue-400/10 blur-[90px]" />
         </div>
 
         <div className="relative mx-auto flex h-[82px] max-w-[1400px] items-center justify-between px-4 xl:px-0">
-
           {/* LOGO */}
           <Link
             href="/"
@@ -173,12 +215,14 @@ export default function SiteHeader() {
                   strokeWidth="4"
                   strokeLinecap="round"
                 />
+
                 <path
                   d="M26 47C26 52 18 52 18 45V33C18 29 15 26 11 26H7C0 26 0 18 7 18H18C23 18 26 22 26 27V47Z"
                   stroke="white"
                   strokeWidth="4"
                   strokeLinecap="round"
                 />
+
                 <path
                   d="M8 26H44"
                   stroke="white"
@@ -192,6 +236,7 @@ export default function SiteHeader() {
               <h1 className="text-[34px] font-extrabold tracking-[-1.5px] text-white">
                 Clinic
               </h1>
+
               <p className="mt-1 text-[20px] font-medium tracking-[2px] text-[#00BCD4]">
                 Master
               </p>
@@ -200,10 +245,10 @@ export default function SiteHeader() {
 
           {/* DESKTOP NAVIGATION */}
           <div className="hidden h-full items-center gap-5 lg:flex xl:gap-7">
-
             {/* HOME */}
             <Link
               href="/"
+              onClick={closeMobile}
               className="group relative flex h-full items-center gap-1.5 text-[16px] font-semibold text-[#00BCD4]"
             >
               Home
@@ -215,7 +260,7 @@ export default function SiteHeader() {
               />
             </Link>
 
-            {/* DROPDOWN ITEMS */}
+            {/* DROPDOWNS */}
             {navItems.map((item) => {
               const isActive = activeDropdown === item.name;
 
@@ -233,7 +278,9 @@ export default function SiteHeader() {
                     }
                     aria-expanded={isActive}
                     className={`group relative flex h-full items-center gap-2 whitespace-nowrap text-[16px] font-semibold transition-colors ${
-                      isActive ? "text-[#00BCD4]" : "text-white hover:text-[#00BCD4]"
+                      isActive
+                        ? "text-[#00BCD4]"
+                        : "text-white hover:text-[#00BCD4]"
                     }`}
                   >
                     {item.name}
@@ -279,6 +326,7 @@ export default function SiteHeader() {
                               <p className="text-[14px] font-bold text-[#061D50] transition-colors group-hover/link:text-[#00BCD4]">
                                 {link.name}
                               </p>
+
                               <p className="mt-1 text-[11px] text-gray-500">
                                 {link.description}
                               </p>
@@ -299,14 +347,15 @@ export default function SiteHeader() {
 
             {/* CONTACT */}
             <Link
-              href="#contact"
+              href="/contact"
+              onClick={closeMobile}
               className="whitespace-nowrap text-[16px] font-semibold text-white transition-colors hover:text-[#00BCD4]"
             >
               Contact Us
             </Link>
 
-            {/* APPOINTMENT BUTTON */}
-            <Link href="#appointment" className="group relative ml-2">
+            {/* APPOINTMENT */}
+            <Link href="/appointment" className="group relative ml-2">
               <motion.div
                 whileHover={{ scale: 1.04, y: -2 }}
                 whileTap={{ scale: 0.97 }}
@@ -318,9 +367,11 @@ export default function SiteHeader() {
                   whileHover={{ x: "0%" }}
                   transition={{ duration: 0.3 }}
                 />
+
                 <span className="relative z-10 transition-colors group-hover:text-[#061D50]">
                   Appointment
                 </span>
+
                 <ArrowUpRight
                   size={18}
                   className="relative z-10 transition-colors group-hover:text-[#061D50]"
@@ -354,16 +405,12 @@ export default function SiteHeader() {
                     <p className="mb-1 text-[11px] font-bold uppercase tracking-[2px] text-[#00BCD4]">
                       Quick Navigation
                     </p>
+
                     <h3 className="mb-4 text-xl font-extrabold text-[#061D50]">
                       Explore Clinic
                     </h3>
 
-                    {[
-                      ["About Clinic", "#about"],
-                      ["Our Services", "#services"],
-                      ["Find a Doctor", "#doctors"],
-                      ["Contact Information", "#contact"],
-                    ].map(([name, href]) => (
+                    {quickLinks.map(({ name, href }) => (
                       <Link
                         key={name}
                         href={href}
@@ -380,7 +427,7 @@ export default function SiteHeader() {
             </div>
           </div>
 
-          {/* MOBILE MENU BUTTON */}
+          {/* MOBILE BUTTON */}
           <button
             type="button"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -422,7 +469,7 @@ export default function SiteHeader() {
                 className="absolute left-0 top-full w-full overflow-hidden border-t border-white/10 bg-[#061D50] shadow-2xl lg:hidden"
               >
                 <div className="mx-auto max-w-[1400px] px-5 py-5">
-
+                  {/* HOME */}
                   <Link
                     href="/"
                     onClick={closeMobile}
@@ -432,6 +479,7 @@ export default function SiteHeader() {
                     <ArrowUpRight size={17} />
                   </Link>
 
+                  {/* MOBILE DROPDOWNS */}
                   {navItems.map((item, index) => {
                     const isOpen = mobileSubmenu === item.name;
 
@@ -457,7 +505,10 @@ export default function SiteHeader() {
                             animate={{ rotate: isOpen ? 180 : 0 }}
                             transition={{ duration: 0.25 }}
                           >
-                            <ChevronDown size={18} className="text-[#00BCD4]" />
+                            <ChevronDown
+                              size={18}
+                              className="text-[#00BCD4]"
+                            />
                           </motion.span>
                         </button>
 
@@ -489,16 +540,18 @@ export default function SiteHeader() {
                     );
                   })}
 
+                  {/* CONTACT */}
                   <Link
-                    href="#contact"
+                    href="/contact"
                     onClick={closeMobile}
                     className="block border-b border-white/10 py-4 font-semibold text-white hover:text-[#00BCD4]"
                   >
                     Contact Us
                   </Link>
 
+                  {/* APPOINTMENT */}
                   <Link
-                    href="#appointment"
+                    href="/appointment"
                     onClick={closeMobile}
                     className="mt-5 flex h-[50px] items-center justify-center gap-2 rounded-xl bg-[#00BCD4] font-bold text-white transition hover:bg-white hover:text-[#061D50]"
                   >
@@ -506,6 +559,27 @@ export default function SiteHeader() {
                     <ArrowUpRight size={18} />
                   </Link>
 
+                  {/* MOBILE QUICK LINKS */}
+                  <div className="mt-6 border-t border-white/10 pt-4">
+                    <p className="mb-3 text-xs font-bold uppercase tracking-[2px] text-[#00BCD4]">
+                      Quick Links
+                    </p>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      {quickLinks.map(({ name, href }) => (
+                        <Link
+                          key={name}
+                          href={href}
+                          onClick={closeMobile}
+                          className="rounded-lg bg-white/5 px-3 py-3 text-xs text-white/70 transition hover:bg-white/10 hover:text-[#00BCD4]"
+                        >
+                          {name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* PHONE */}
                   <div className="mt-5 flex items-center gap-3 text-xs text-white/50">
                     <PhoneCall size={15} className="text-[#00BCD4]" />
                     +1 123 456 7890
